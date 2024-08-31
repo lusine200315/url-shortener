@@ -29,7 +29,6 @@ urlsRouter.post('/', async(req, res) => {
         
         result = await UrlsService.setUrl(url);
         await CachesService.setInCache(url, JSON.stringify({
-            originalUrl: result.originalUrl,
             generatedUrl: result.generatedUrl
         }));
         res.status(201).json({"shortedUrl": result.generatedUrl});
@@ -58,7 +57,7 @@ urlsRouter.get('/:url', async(req, res) => {
 
         if(result) {
             const originalUrl = result?.originalUrl;
-            await CachesService.setInCache(url, originalUrl);
+            await CachesService.setInCache(originalUrl, url);
             return res.redirect(originalUrl);
         } else {
             res.status(404).json({message: "Url not found"});
